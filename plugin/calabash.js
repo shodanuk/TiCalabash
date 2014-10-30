@@ -51,19 +51,25 @@ exports.run = function(logger, config, cli, finished) {
     var platform = (cli.argv.platform || cli.argv.p),
         projectDir = path.resolve(process.env.SOURCE_ROOT ? path.join(process.env.SOURCE_ROOT, '..', '..') : '.');
 
+    logger.info("Starting TiCalabash for platform: "+platform);
+
     /* if they are not using ios or android, this command should gracefully bow out*/
     if (['android', 'ios', 'iphone'].indexOf(platform) === -1) {
-        throw 'Calabash does not support your build target. \n Mobile Web support is planned, but not supported at this time.';
+        logger.execption('Calabash does not support your build target. \n Mobile Web support is planned, but not supported at this time.');
     }
 
     if (fs.existsSync(path.join(projectDir, 'tiapp.xml'))) {
         if (!fs.existsSync(path.join(projectDir, 'features'))) {
+            logger.info('/features dir not present. Setting one up for you now.');
+
             var featuresFolder = path.resolve(path.join(appDir, '..', '..', 'ticalabash', 'assets', 'features'));
             var cucumberYML = path.resolve(path.join(appDir, '..', '..', 'ticalabash', 'assets', 'cucumber.yml'));
             exec('cp', ['-r', featuresFolder, path.join(projectDir, 'features')], null, function() {		
 				fs.createReadStream(cucumberYML).pipe(fs.createWriteStream(projectDir+"/cucumber.yml"));
 				console.log('cucumberYML is coming from'+ cucumberYML);
                 console.info('Features Directory created and cucumber.yml is set.');
+				logger.info('cucumberYML is coming from'+ cucumberYML);
+                logger.info('Features Directory created and cucumber.yml is set.');
             });
 
         }
@@ -75,5 +81,6 @@ exports.run = function(logger, config, cli, finished) {
         require('../lib/run_' + (platform === 'iphone' ? 'ios' : platform))(logger, config, cli, projectDir, finished);
     } else {
         throw "Invalid Titanium project location";
+        logger.execption("Invalid Titanium project location");
     }
 };
