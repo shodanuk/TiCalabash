@@ -59,19 +59,17 @@ exports.run = function(logger, config, cli, finished) {
     }
 
     if (fs.existsSync(path.join(projectDir, 'tiapp.xml'))) {
-        if (!fs.existsSync(path.join(projectDir, 'features'))) {
+        if ( ! fs.existsSync(path.join(projectDir, 'features'))) {
             logger.info('/features dir not present. Setting one up for you now.');
 
             var featuresFolder = path.resolve(path.join(appDir, '..', '..', 'ticalabash', 'assets', 'features'));
             var cucumberYML = path.resolve(path.join(appDir, '..', '..', 'ticalabash', 'assets', 'cucumber.yml'));
-            exec('cp', ['-r', featuresFolder, path.join(projectDir, 'features')], null, function() {		
+
+            exec('cp', ['-r', featuresFolder, path.join(projectDir, 'features')], null, function() {
 				fs.createReadStream(cucumberYML).pipe(fs.createWriteStream(projectDir+"/cucumber.yml"));
-				console.log('cucumberYML is coming from'+ cucumberYML);
-                console.info('Features Directory created and cucumber.yml is set.');
 				logger.info('cucumberYML is coming from'+ cucumberYML);
                 logger.info('Features Directory created and cucumber.yml is set.');
             });
-
         }
         if (fs.existsSync(path.join(projectDir, 'app'))) {
             // do alloy crap here...
@@ -80,7 +78,6 @@ exports.run = function(logger, config, cli, finished) {
         // require and run the correct platform...
         require('../lib/run_' + (platform === 'iphone' ? 'ios' : platform))(logger, config, cli, projectDir, finished);
     } else {
-        throw "Invalid Titanium project location";
         logger.execption("Invalid Titanium project location");
     }
 };
