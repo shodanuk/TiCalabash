@@ -55,7 +55,7 @@ exports.run = function(logger, config, cli, finished) {
 
     /* if they are not using ios or android, this command should gracefully bow out*/
     if (['android', 'ios', 'iphone'].indexOf(platform) === -1) {
-        logger.execption('Calabash does not support your build target. \n Mobile Web support is planned, but not supported at this time.');
+        logger.exception('Calabash does not support your build target. \n Mobile Web support is planned, but not supported at this time.');
     }
 
     if (fs.existsSync(path.join(projectDir, 'tiapp.xml'))) {
@@ -78,6 +78,6 @@ exports.run = function(logger, config, cli, finished) {
         // require and run the correct platform...
         require('../lib/run_' + (platform === 'iphone' ? 'ios' : platform))(logger, config, cli, projectDir, finished);
     } else {
-        logger.execption("Invalid Titanium project location");
+        logger.exception("Invalid Titanium project location");
     }
 };
